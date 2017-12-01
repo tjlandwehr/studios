@@ -25,7 +25,7 @@ Even though our database does not have entries in it, we can imagine that it doe
 SELECT title FROM movies;
 
 /* 2. List all the titles of the movies in the database in descending order of the year they were released. */
- SELECT title, year FROM movies ORDER BY year DESC;
+ SELECT title FROM movies ORDER BY year DESC;
 
 /* 3. Insert a new record into the directors table for Jean-Pierre Jeunet whose country of origin is France. 
     (Note: Assume the column for director_id is auto incremented, so you don't need to put in a value 
@@ -50,6 +50,11 @@ SELECT directors.country FROM directors
     INNER JOIN movies 
     ON directors.director_id = movies.director_id 
     WHERE movies.title = "Amelie";
+    
+/* Doing the same thing with a subquery would be the following: */
+SELECT country FROM directors
+    WHERE director_id IN 
+    (SELECT director_id FROM movies WHERE title = "Amelie");
 
 /* 8. List all the movies in the database along with each movie's director, ordered by the director's last 
     name in ascending order. (Hint: you'll want to use a join and choose the columns title, first, and 
