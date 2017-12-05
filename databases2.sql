@@ -138,6 +138,14 @@ JOIN movies
 ON viewings.movie_id = movies.movie_id
 WHERE movies.title = "The Tango Lesson";
 
+/* OR */
+SELECT email from viewings
+join movies
+ON movies.movie_id = viewings.movie_id
+join viewers
+on viewers.viewer_id = viewings.viewer_id
+WHERE title = 'The Tango Lesson'
+
 /* 13. Sarah is hosting a Kurosawa film festival soon and needs an email list to send out invites. What are the 
     full names and emails of all her friends who have watched any movie by Akira Kurosawa? */
 SELECT DISTINCT viewers.first, viewers.last, viewers.email
