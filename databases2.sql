@@ -60,6 +60,9 @@ SELECT date_viewed AS last_viewing
 FROM viewings
 ORDER BY date_viewed DESC LIMIT 1;
 
+/* OR */
+SELECT MAX(date_viewed) FROM viewings;
+
 /* 8. What is the id of the last-viewed movie? */
 SELECT movies.movie_id AS last_viewed_movie_id
 FROM movies
@@ -93,6 +96,38 @@ ON movies.movie_id = viewings.movie_id
 GROUP BY viewings.viewing_id
 ORDER BY COUNT(viewings.date_viewed) DESC;
 
+/* OR */
+SELECT COUNT(viewing_id) AS viewNum, movies.title
+FROM viewings
+JOIN movies
+ON movies.movie_id = viewings.movie_id
+WHERE viewNum IN (
+    SELECT COUNT(viewing_id) AS viewNum, movies.title
+    FROM viewings
+    GROUP BY movies.movie_id
+    ORDER BY viewNum DESC;
+    LIMIT 1
+)
+GROUP BY movies.movie_id
+ORDER BY viewNum DESC;
+
+/* OR */
+
+SELECT COUNT(viewing_id) AS viewNum, movies.title
+FROM viewings
+JOIN movies
+ON movies.movie_id = viewings.movie_id
+GROUP BY movies.movie_id
+HAVING viewNum = (
+    SELECT COUNT(viewing_id) AS viewNum
+    FROM viewings
+    JOIN movies
+    ON movies.movie_id = viewings.movie_id
+    GROUP BY movies.movie_id
+    ORDER BY viewNum DESC
+    LIMIT 1
+);
+
 /* 12. Find the email of everyone who has watched "The Tango Lesson", so Sarah can email them and ask 
     what they thought of it. */
 SELECT viewers.email
@@ -114,3 +149,14 @@ ON viewings.movie_id = movies.movie_id
 JOIN directors
 ON movies.director_id = directors.director_id
 WHERE directors.first = "Akira" AND directors.last = "Kurosawa";
+
+/* OR */
+SELECT DISTINCT viewers.first, viewers.last, viewers.email
+FROM viewings
+JOIN movies
+ON movies.movie_id = viewings.movie_id
+JOIN viewers
+ON viewers.viewer_id = viewings.viewer_id
+JOIN directors
+ON directors.director_id = movies.director_id
+WHERE directors.first = 'Akira' AND directors.last = 'Kurosawa';
